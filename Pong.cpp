@@ -74,7 +74,7 @@ int main()
 
 	int leftPoints = 0;
 	int rightPoints = 0;
-	int pointsTowin = 1;
+	int pointsTowin = 5;
 
 	Ball ball;
 	ball.x = GetScreenWidth() / 2.0f;
