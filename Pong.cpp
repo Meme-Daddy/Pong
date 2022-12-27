@@ -211,7 +211,7 @@ int main()
 		}
 		
 		BeginDrawing();
-		DrawFPS(0, 0);
+		//DrawFPS(0, 0);
 		ClearBackground(BLACK);
 
 		ball.Draw();
