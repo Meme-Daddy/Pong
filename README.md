@@ -1,11 +1,28 @@
 # Pong!
-![image](https://user-images.githubusercontent.com/57479494/209632531-a990268c-0d40-4976-9485-eb85d7990654.png)
-
 A simple game I'm making to learn how to program
+![image](https://user-images.githubusercontent.com/57479494/210044915-8d332114-e16a-42af-ac6d-363a868e6870.png)
+
+**2.0.0 Patch Notes 12/29/22**
+- Added a main menu (Pong logo, Start Game, Settings (WORK IN PROGRESS), Exit)
+- Added menu music
+- Added sound affects
+- Added a gamemode select screen
+- UI buttons now turn red when hovering over them
+- Added CPU AI
+- Added a Player vs CPU mode
+- Added ability to go back to main menu after finishing game
+- Sped up paddles
+- Ball no longer can travel through paddle after reaching a certain speed
+- Slightly improved ball physics
+- Changed ball serve to be more fair and consistent
+- Pong logo on main menu switches theme
+
+**Known Issues**
+- Settings button doesn't function
+- Can't pause during a game
 
 **Coming Soon**
-- Main menu screen
-- Settings screen
-- Themes
-- AI for Player vs CPU mode
-- Better ball physics
+- More themes
+- Settings menu
+- Ability to mute music/sounds
+- Campaign???
