@@ -1,6 +1,7 @@
 # Pong!
-A simple game I'm making to learn how to program
-![image](https://user-images.githubusercontent.com/57479494/210044915-8d332114-e16a-42af-ac6d-363a868e6870.png)
+A simple game I'm recreating to help me learn to program
+
+![PongGameplay](https://user-images.githubusercontent.com/57479494/210155084-4b595924-d60c-486e-a12e-b37e2c0521d6.gif)
 
 **2.0.0 Patch Notes 12/29/22**
 - Added a main menu (Pong logo, Start Game, Settings (WORK IN PROGRESS), Exit)
