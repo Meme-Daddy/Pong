@@ -8,7 +8,6 @@
 
 using std::string;
 
-
 bool atStartMenu = true,
 	atGamemodeMenu = false,
 	atEndScreen = false,
@@ -96,6 +95,9 @@ struct UI
 
 	//End screen collision rects
 	Rectangle mainMenuTxtBounds = { (float)GetScreenWidth() / 2 - 150, (float)GetScreenHeight() - 160 , 275, 50 };
+
+	//Pause screen collisions
+	Rectangle pauseMainMenuTxtBounds = { (float)GetScreenWidth() / 2 - 150, (float)GetScreenHeight() / 2 + 50 , 275, 50 };
 
 	Color color = YELLOW,
 		pong = color,
@@ -373,6 +375,43 @@ struct UI
 			DrawText("Main Menu", GetScreenWidth() / 3 + 75, GetScreenHeight() / 2 + 200, 50, mainMenu);
 		}
 	}
+
+	void PauseScreenDraw()
+	{
+		if (CheckCollisionPointRec(mousePoint, pauseMainMenuTxtBounds))
+		{
+			if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+				mainMenuBtnState = 2;
+			else mainMenuBtnState = 1;
+			if (mainMenuBtnState = 1)
+				mainMenu = RED;
+			if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
+			{
+				playing = false;
+				paused = false;
+				atEndScreen = false;
+				atGamemodeMenu = false;
+				backToStart = true;
+				atStartMenu = true;
+				gameMode = 0;
+			}
+		}
+		else mainMenuBtnState = 0;
+		if (mainMenuBtnState == 0)
+			if (theme == 0)
+				mainMenu = YELLOW;
+			else if (theme == 1)
+				mainMenu = BLACK;
+
+		if (theme == 0)
+			color = YELLOW;
+		else if (theme == 1)
+			color = BLACK;
+
+		//DrawRectangleLinesEx(pauseMainMenuTxtBounds, 2, WHITE);
+		DrawText("PAUSED", GetScreenWidth() / 3 + 20, GetScreenHeight() / 3 - 50, 90, color);
+		DrawText("Main Menu", GetScreenWidth() / 3 + 75, GetScreenHeight() / 2 + 50, 50, mainMenu);
+	}
 };
 
 struct Ball
@@ -511,6 +550,7 @@ int main()
 	//SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 	InitWindow(screenWidth, screenHeight, "Pong!");
 	SetTargetFPS(60);
+	SetExitKey(KEY_F10);
 
 	InitAudioDevice();
 	Music menuMusic = LoadMusicStream(GetCurrentDirectory(1).c_str());
@@ -518,8 +558,8 @@ int main()
 	Sound pongWallHit = LoadSound(GetCurrentDirectory(3).c_str());
 	Sound pongScore = LoadSound(GetCurrentDirectory(4).c_str());
 	SetMusicVolume(menuMusic, 0.08f);
-	SetSoundVolume(pongPaddleHit, 0.1f);
-	SetSoundVolume(pongWallHit, 0.2f);
+	SetSoundVolume(pongPaddleHit, 0.2f);
+	SetSoundVolume(pongWallHit, 0.3f);
 	SetSoundVolume(pongScore, 0.1f);
 
 	Color backroundColor = BLACK;
@@ -559,24 +599,32 @@ int main()
 
 	Color pointsColor = LIGHTGRAY;
 	
+	int counter = 0;
 
 	// While window is not closed
-	while (!WindowShouldClose() && !exitGame)
+	while (!WindowShouldClose() && !exitGame) // Game loop
 	{
 		UpdateMusicStream(menuMusic);
 
+		if (IsKeyPressed(KEY_ESCAPE)) // Setting pause key
+			counter++;
+		if (backToStart)
+			counter = 0;
+		paused = (counter % 2) ? true : false;
+				
 		if (theme == 1)
 			backroundColor = WHITE;
 		else if (theme == 0)
 			backroundColor = BLACK;
 
-		// Sending ball into motion
+
+		if (!paused) // Ball and paddle motion
+		{
 		ball.x += ball.speedX * GetFrameTime();
 		ball.y += ball.speedY * GetFrameTime();
-
-
 		leftPaddle.LeftPaddleMovement(ball.y, ball.x);
 		rightPaddle.RightPaddleMovement(ball.y, ball.x);
+		}
 
 		menu.mousePoint = GetMousePosition(); // Sending mouse xy to startmenu struct
 
@@ -674,6 +722,7 @@ int main()
 		if ((IsKeyReleased(KEY_SPACE) && (leftPoints >= pointsTowin || rightPoints >= pointsTowin))
 			|| ((leftPoints >= pointsTowin || rightPoints >= pointsTowin) && atStartMenu == true))
 		{
+			backToStart = true;
 			atEndScreen = false;
 		}
 
@@ -685,11 +734,9 @@ int main()
 		BeginDrawing();
 		ClearBackground(backroundColor);
 
-		if (atStartMenu) // Initial start menu
+		if (atStartMenu) // Start menu
 		{
 			PlayMusicStream(menuMusic);
-			if(backToStart)
-				StopMusicStream(menuMusic);
 			
 			if (backToStart)
 			{
@@ -749,9 +796,12 @@ int main()
 
 		}
 
-		if (!atStartMenu) // Playing
+		if (!atStartMenu) // Playing in game
 		{
-			if (playing)//for (static bool first = true; first; first = false) // Some code that executes only once period.
+			if (paused)
+				menu.PauseScreenDraw();
+
+			if (playing)
 			{
 				leftPoints = 0;
 				rightPoints = 0;
